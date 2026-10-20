@@ -26,6 +26,7 @@ FREQ_TEXT = {
     "As needed": {"en": "only when needed", "hi": "ज़रूरत पड़ने पर", "mr": "गरज असेल तेव्हाच"},
     "At bedtime": {"en": "at bedtime", "hi": "रात को सोने से पहले", "mr": "रात्री झोपण्यापूर्वी"},
     "Every morning": {"en": "every morning", "hi": "हर सुबह", "mr": "दररोज सकाळी"},
+    "Once a week": {"en": "once a week (not every day)", "hi": "हफ़्ते में 1 बार (रोज़ नहीं)", "mr": "आठवड्यातून 1 वेळा (दररोज नाही)"},
     "Every morning and night": {"en": "every morning and night", "hi": "हर सुबह और रात", "mr": "दररोज सकाळी आणि रात्री"},
     "Every night": {"en": "every night", "hi": "हर रात", "mr": "दररोज रात्री"},
 }
@@ -170,6 +171,9 @@ def _frequency_text(entry: str, lang: str) -> str:
     label = _canonical_frequency(entry)
     if label in FREQ_TEXT:
         return FREQ_TEXT[label][lang]
+    pattern = re.match(r"Pattern\s+([\d.\-]+)$", label)
+    if pattern:
+        return _pattern_text(pattern.group(1), lang)
     hours = re.match(r"Every\s+([\d-]+)\s+hours", label)
     if hours:
         n = hours.group(1)
@@ -219,7 +223,31 @@ def _symptom_text(entry: str, lang: str) -> str:
     return pair[0 if lang == "hi" else 1] if pair else entry
 
 
+PATTERN_SLOTS = {
+    3: ["morning", "afternoon", "night"],
+    4: ["morning", "afternoon", "evening", "night"],
+}
+SLOT_WORDS = {
+    "morning": {"en": "in the morning", "hi": "सुबह", "mr": "सकाळी"},
+    "afternoon": {"en": "in the afternoon", "hi": "दोपहर", "mr": "दुपारी"},
+    "evening": {"en": "in the evening", "hi": "शाम", "mr": "संध्याकाळी"},
+    "night": {"en": "at night", "hi": "रात", "mr": "रात्री"},
+}
+
+
+def _pattern_text(pattern: str, lang: str) -> str:
+    """'1-0-1' -> '1-0-1 (1 in the morning, 1 at night)'. The pattern is kept so every digit stays verifiable."""
+    parts = pattern.split("-")
+    slots = PATTERN_SLOTS.get(len(parts), [])
+    doses = [f"{p} {SLOT_WORDS[s][lang]}" for p, s in zip(parts, slots) if float(p) > 0]
+    return f"{pattern} ({', '.join(doses)})" if doses else pattern
+
+
 def _timing_text(entry: str, lang: str) -> str:
+    if entry.upper() == "AC":
+        return {"en": "before eating", "hi": "खाना खाने से पहले", "mr": "जेवणापूर्वी"}[lang]
+    if entry.upper() == "PC":
+        return {"en": "after eating", "hi": "खाना खाने के बाद", "mr": "जेवणानंतर"}[lang]
     low = entry.lower()
     gap = re.search(r"(\d+)\s*(minutes?|mins?|hours?)\s+(before|after)\s+(\w+)", low)
     if gap:
@@ -275,13 +303,13 @@ TIMING_COVERED_BY = {"in the morning": "Every morning", "at bedtime": "At bedtim
 
 def _amount(text: str, lang: str) -> str:
     """First per-dose count in the text, such as '2 puffs' or '1-2 tablets'."""
-    m = re.search(r"\b(\d+(?:\s*-\s*\d+)?)\s*(puff|tablet|tab|capsule|cap|drop)s?\b", text, re.IGNORECASE)
-    if not m:
+    found = ClinicalExtractor.per_dose_count(text)
+    if not found:
         return ""
-    n, unit = re.sub(r"\s+", "", m.group(1)), m.group(2).lower()
-    if lang == "en":
+    n, unit = found
+    if lang == "en" or unit not in COUNT_UNITS:
         unit = {"tab": "tablet", "cap": "capsule"}.get(unit, unit)
-        return f"{n} {unit}{'' if n == '1' else 's'}"
+        return f"{n} {unit}{'' if n == '1' or unit == 'ml' else 's'}"
     return f"{n} {COUNT_UNITS[unit][0 if lang == 'hi' else 1]}"
 
 
@@ -304,6 +332,9 @@ def _schedule(text: str, lang: str):
     return freqs, timings
 
 
+DURATION_FOR = {"en": "for {dur}", "hi": "{dur} तक", "mr": "{dur}"}
+
+
 def _medicine_plans(raw_text: str, medicines: List[str], lang: str):
     """Splits the text at each medicine name so every medicine keeps its own schedule."""
     found = [(raw_text.find(m.split(" ")[0]), m) for m in medicines]
@@ -314,9 +345,11 @@ def _medicine_plans(raw_text: str, medicines: List[str], lang: str):
         segment = raw_text[pos:end]
         freqs, timings = _schedule(segment, lang)
         amount = _amount(segment, lang)
+        course = [DURATION_FOR[lang].format(dur=_duration_text(d, lang)) for d in ClinicalExtractor.extract_durations(segment)]
         plans.append({
-            "medicine": med, "name": med.split(" ")[0], "freqs": freqs, "timings": timings,
-            "when": ([amount] if amount else []) + freqs + timings,
+            "medicine": med, "name": re.sub(r"\s*[\d.]+\s*\S*$", "", med), "freqs": freqs, "timings": timings,
+            "when": ([amount] if amount else []) + freqs + timings + course,
+            "has_duration": bool(course), "course": course,
         })
     return plans
 
@@ -338,7 +371,12 @@ def build_rule_based_content(raw_text: str, lang: str, extracted: ExtractedEntit
         dose_content = t["dose_many"]
         dose_items = medicines
         dose_badge = {"en": f"{len(medicines)} medicines", "hi": f"{len(medicines)} दवाएं", "mr": f"{len(medicines)} औषधे"}[lang]
-        freq_items = [f"{p['name']}: {_join(p['freqs'], lang)}" for p in plans if p["freqs"]] or None
+        if any(p["has_duration"] for p in plans):
+            duration_line = ""  # each medicine line already carries its own course length
+        freq_items = [
+            f"{p['name']}: {', '.join([_join(p['freqs'], lang)] + p['course'])}"
+            for p in plans if p["freqs"]
+        ] or None
         time_items = [f"{p['name']}: {_join(p['timings'], lang)}" for p in plans if p["timings"]] or None
         freq_content = t["freq_many"] if freq_items else t["freq_unknown"]
         if duration_line:

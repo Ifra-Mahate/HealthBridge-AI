@@ -13,12 +13,14 @@ from ..models.schemas import (
 
 logger = logging.getLogger("healthbridge.ai")
 
-SYSTEM_PROMPT = """You are HealthBridge AI, a clinical plain-language specialist helping low-literacy patients understand complex medical instructions safely.
+SYSTEM_PROMPT = """You are HealthBridge AI, a clinical plain-language specialist helping patients and caregivers understand medical instructions safely.
 
 GOAL:
-Convert the provided medical instruction or prescription into simple, crystal-clear, reassuring language for patients with low literacy.
+Convert the provided medical instruction or prescription into clear, accurate, reassuring plain language that any patient or caregiver can follow,
+regardless of education level, age, health condition or familiarity with medical terms. Plain language benefits everyone: keep sentences short and
+explain every abbreviation (including Indian prescription notation such as OD, BD, TDS, SOS, AC, PC and dose patterns like 1-0-1).
 You will output your response in the requested target language:
-- 'en': Simple English (5th-grade reading level, warm, clear, conversational, short sentences)
+- 'en': Plain English (short sentences, everyday words, warm and clear)
 - 'hi': Simple Hindi (हिन्दी) (Devanagari script, everyday colloquial spoken Hindi, avoid archaic or difficult vocabulary)
 - 'mr': Simple Marathi (मराठी) (Devanagari script, clear everyday spoken Marathi, warm and polite)
 
@@ -149,7 +151,7 @@ Original Medical Prescription / Instruction:
 {raw_text}
 \"\"\"
 
-Please convert this into low-literacy patient instructions following all instructions and JSON schema."""
+Please convert this into clear patient instructions following all instructions and the JSON schema."""
 
         try:
             from google import genai
@@ -170,7 +172,7 @@ Please convert this into low-literacy patient instructions following all instruc
                     response_mime_type="application/json",
                     temperature=0.2,
                 )
-            ), timeout=90)
+            ), timeout=settings.AI_TIMEOUT_SECONDS)
             raw_content = response.text
             parsed = json.loads(raw_content)
             return {
@@ -184,7 +186,7 @@ Please convert this into low-literacy patient instructions following all instruc
         except Exception as e:
             # A timeout means Gemini itself is slow; retrying over REST would only double the wait
             if isinstance(e, asyncio.TimeoutError):
-                raise RuntimeError("Gemini did not answer within 90 seconds") from e
+                raise RuntimeError(f"Gemini did not answer within {settings.AI_TIMEOUT_SECONDS} seconds") from e
             # Try REST fallback if SDK initialization has specific version issue
             logger.warning(f"Google GenAI SDK error, attempting direct REST fallback: {e}")
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{settings.GEMINI_MODEL}:generateContent?key={settings.GEMINI_API_KEY}"
@@ -201,7 +203,7 @@ Please convert this into low-literacy patient instructions following all instruc
                     "temperature": 0.2
                 }
             }
-            async with httpx.AsyncClient(timeout=90.0) as http_client:
+            async with httpx.AsyncClient(timeout=float(settings.AI_TIMEOUT_SECONDS)) as http_client:
                 res = await http_client.post(url, json=payload)
                 res.raise_for_status()
                 res_data = res.json()

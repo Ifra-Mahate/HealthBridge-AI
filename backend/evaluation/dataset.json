@@ -1,0 +1,847 @@
+{
+  "description": "HealthBridge AI evaluation set: 30 fictional prescriptions with hand-written gold annotations. Frequencies use the canonical labels described in evaluation/README.md. Timetable slots follow the convention: once a day = morning unless a time is given, twice a day = morning + night, 3 times = morning + afternoon + night, 4 times = all four slots, 'at night'/'at bedtime' = night, 'in the evening' = evening.",
+  "items": [
+    {
+      "id": "P01",
+      "text": "Rx: Amoxicillin 500 mg PO TID x 7 days with meals. Do NOT take if allergic to penicillin. Stop and seek emergency care if rash, facial swelling or difficulty breathing develops.",
+      "gold": {
+        "medications": [
+          "Amoxicillin 500 mg"
+        ],
+        "frequencies": [
+          "3 times a day"
+        ],
+        "durations": [
+          "7 days"
+        ],
+        "warnings": [
+          "rash",
+          "facial swelling",
+          "difficulty breathing"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Amoxicillin 500 mg": {
+            "slots": [
+              "morning",
+              "afternoon",
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P02",
+      "text": "Metformin 500 mg BID with breakfast and dinner. Avoid alcohol. Do not skip meals.",
+      "gold": {
+        "medications": [
+          "Metformin 500 mg"
+        ],
+        "frequencies": [
+          "Twice a day"
+        ],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Metformin 500 mg": {
+            "slots": [
+              "morning",
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P03",
+      "text": "Tab Pantoprazole 40 mg 1-0-0 AC x 14 days.",
+      "gold": {
+        "medications": [
+          "Pantoprazole 40 mg"
+        ],
+        "frequencies": [
+          "Pattern 1-0-0"
+        ],
+        "durations": [
+          "14 days"
+        ],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {
+          "Pantoprazole 40 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P04",
+      "text": "Tab Augmentin 625 mg TDS x 5 days after food. Tab Paracetamol 650 mg SOS for fever, not more than 4 tablets in 24 hours.",
+      "gold": {
+        "medications": [
+          "Augmentin 625 mg",
+          "Paracetamol 650 mg"
+        ],
+        "frequencies": [
+          "3 times a day",
+          "As needed"
+        ],
+        "durations": [
+          "5 days"
+        ],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Augmentin 625 mg": {
+            "slots": [
+              "morning",
+              "afternoon",
+              "night"
+            ],
+            "as_needed": false
+          },
+          "Paracetamol 650 mg": {
+            "slots": [],
+            "as_needed": true
+          }
+        }
+      }
+    },
+    {
+      "id": "P05",
+      "text": "Tab Amlodipine 5 mg OD in the morning. Tab Atorvastatin 10 mg HS. Do not stop abruptly. Report chest pain immediately.",
+      "gold": {
+        "medications": [
+          "Amlodipine 5 mg",
+          "Atorvastatin 10 mg"
+        ],
+        "frequencies": [
+          "Once a day",
+          "Every morning",
+          "At bedtime"
+        ],
+        "durations": [],
+        "warnings": [
+          "chest pain"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Amlodipine 5 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          },
+          "Atorvastatin 10 mg": {
+            "slots": [
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P06",
+      "text": "Take Atorvastatin 20 mg once daily at night.",
+      "gold": {
+        "medications": [
+          "Atorvastatin 20 mg"
+        ],
+        "frequencies": [
+          "Once a day",
+          "Every night"
+        ],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {
+          "Atorvastatin 20 mg": {
+            "slots": [
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P07",
+      "text": "Levothyroxine 50 mcg OD on an empty stomach, 30 minutes before breakfast. Do not take with calcium or iron supplements.",
+      "gold": {
+        "medications": [
+          "Levothyroxine 50 mcg"
+        ],
+        "frequencies": [
+          "Once a day"
+        ],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Levothyroxine 50 mcg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P08",
+      "text": "Syp Cetirizine 5 ml 0-0-1 for 5 days. May cause drowsiness, do not drive.",
+      "gold": {
+        "medications": [
+          "Cetirizine 5 ml"
+        ],
+        "frequencies": [
+          "Pattern 0-0-1"
+        ],
+        "durations": [
+          "5 days"
+        ],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Cetirizine 5 ml": {
+            "slots": [
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P09",
+      "text": "Ibuprofen 400 mg three times a day with food for 5 days. Do not exceed 1200 mg in 24 hours. Stop if black tarry stools or stomach burning occur.",
+      "gold": {
+        "medications": [
+          "Ibuprofen 400 mg"
+        ],
+        "frequencies": [
+          "3 times a day"
+        ],
+        "durations": [
+          "5 days"
+        ],
+        "warnings": [
+          "black tarry stools",
+          "stomach burning"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Ibuprofen 400 mg": {
+            "slots": [
+              "morning",
+              "afternoon",
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P10",
+      "text": "Budesonide 200 mcg inhaler 2 puffs BID. Salbutamol 100 mcg inhaler 2 puffs PRN for wheezing, maximum 8 puffs in 24 hours. Go to hospital if shortness of breath does not improve.",
+      "gold": {
+        "medications": [
+          "Budesonide 200 mcg",
+          "Salbutamol 100 mcg"
+        ],
+        "frequencies": [
+          "Twice a day",
+          "As needed"
+        ],
+        "durations": [],
+        "warnings": [
+          "shortness of breath"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Budesonide 200 mcg": {
+            "slots": [
+              "morning",
+              "night"
+            ],
+            "as_needed": false
+          },
+          "Salbutamol 100 mcg": {
+            "slots": [],
+            "as_needed": true
+          }
+        }
+      }
+    },
+    {
+      "id": "P11",
+      "text": "Tab Azithromycin 500 mg 1-0-0 x 3 days. Tab Montelukast 10 mg 0-0-1 x 10 days.",
+      "gold": {
+        "medications": [
+          "Azithromycin 500 mg",
+          "Montelukast 10 mg"
+        ],
+        "frequencies": [
+          "Pattern 1-0-0",
+          "Pattern 0-0-1"
+        ],
+        "durations": [
+          "3 days",
+          "10 days"
+        ],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {
+          "Azithromycin 500 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          },
+          "Montelukast 10 mg": {
+            "slots": [
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P12",
+      "text": "Cap Omeprazole 20 mg BD AC for 2 weeks. Avoid spicy food.",
+      "gold": {
+        "medications": [
+          "Omeprazole 20 mg"
+        ],
+        "frequencies": [
+          "Twice a day"
+        ],
+        "durations": [
+          "2 weeks"
+        ],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Omeprazole 20 mg": {
+            "slots": [
+              "morning",
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P13",
+      "text": "Insulin Glargine 10 units at bedtime. Check blood sugar daily. If shaky or cold sweats, eat sugar and call your doctor.",
+      "gold": {
+        "medications": [
+          "Insulin Glargine 10 units"
+        ],
+        "frequencies": [
+          "At bedtime"
+        ],
+        "durations": [],
+        "warnings": [
+          "shaky",
+          "cold sweats"
+        ],
+        "has_prohibition": false,
+        "timetable": {
+          "Insulin Glargine 10 units": {
+            "slots": [
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P14",
+      "text": "Timolol 0.5% eye drops, 1 drop in each eye BD. Do not touch the dropper tip.",
+      "gold": {
+        "medications": [
+          "Timolol 0.5%"
+        ],
+        "frequencies": [
+          "Twice a day"
+        ],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Timolol 0.5%": {
+            "slots": [
+              "morning",
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P15",
+      "text": "Warfarin 5 mg once daily in the evening. Avoid aspirin. Report blood in stool or dark urine immediately.",
+      "gold": {
+        "medications": [
+          "Warfarin 5 mg"
+        ],
+        "frequencies": [
+          "Once a day",
+          "Every night"
+        ],
+        "durations": [],
+        "warnings": [
+          "blood in stool",
+          "dark urine"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Warfarin 5 mg": {
+            "slots": [
+              "evening"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P16",
+      "text": "Prednisolone 10 mg OD after breakfast for 5 days. Do not stop suddenly.",
+      "gold": {
+        "medications": [
+          "Prednisolone 10 mg"
+        ],
+        "frequencies": [
+          "Once a day"
+        ],
+        "durations": [
+          "5 days"
+        ],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Prednisolone 10 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P17",
+      "text": "Tab Domperidone 10 mg 1-1-1 AC x 5 days. Tab Ondansetron 4 mg SOS for vomiting.",
+      "gold": {
+        "medications": [
+          "Domperidone 10 mg",
+          "Ondansetron 4 mg"
+        ],
+        "frequencies": [
+          "Pattern 1-1-1",
+          "As needed"
+        ],
+        "durations": [
+          "5 days"
+        ],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {
+          "Domperidone 10 mg": {
+            "slots": [
+              "morning",
+              "afternoon",
+              "night"
+            ],
+            "as_needed": false
+          },
+          "Ondansetron 4 mg": {
+            "slots": [],
+            "as_needed": true
+          }
+        }
+      }
+    },
+    {
+      "id": "P18",
+      "text": "Ciprofloxacin 500 mg every 12 hours for 7 days. Drink plenty of water. Stop if severe diarrhea develops.",
+      "gold": {
+        "medications": [
+          "Ciprofloxacin 500 mg"
+        ],
+        "frequencies": [
+          "Every 12 hours"
+        ],
+        "durations": [
+          "7 days"
+        ],
+        "warnings": [
+          "severe diarrhea"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Ciprofloxacin 500 mg": {
+            "slots": [
+              "morning",
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P19",
+      "text": "Losartan 50 mg once a day. Furosemide 20 mg once a day in the morning. Report swelling of legs.",
+      "gold": {
+        "medications": [
+          "Losartan 50 mg",
+          "Furosemide 20 mg"
+        ],
+        "frequencies": [
+          "Once a day",
+          "Every morning"
+        ],
+        "durations": [],
+        "warnings": [
+          "swelling of legs"
+        ],
+        "has_prohibition": false,
+        "timetable": {
+          "Losartan 50 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          },
+          "Furosemide 20 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P20",
+      "text": "Clopidogrel 75 mg OD. Aspirin 75 mg OD after lunch. Do not stop without asking your cardiologist.",
+      "gold": {
+        "medications": [
+          "Clopidogrel 75 mg",
+          "Aspirin 75 mg"
+        ],
+        "frequencies": [
+          "Once a day"
+        ],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Clopidogrel 75 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          },
+          "Aspirin 75 mg": {
+            "slots": [
+              "afternoon"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P21",
+      "text": "Take Doxycycline 100 mg twice a day for 10 days with a full glass of water. Avoid direct sunlight.",
+      "gold": {
+        "medications": [
+          "Doxycycline 100 mg"
+        ],
+        "frequencies": [
+          "Twice a day"
+        ],
+        "durations": [
+          "10 days"
+        ],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Doxycycline 100 mg": {
+            "slots": [
+              "morning",
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P22",
+      "text": "Tab Metformin 1000 mg 1-0-1 PC. Tab Glimepiride 2 mg 1-0-0 AC. Do not skip meals. If dizzy or shaky, take glucose.",
+      "gold": {
+        "medications": [
+          "Metformin 1000 mg",
+          "Glimepiride 2 mg"
+        ],
+        "frequencies": [
+          "Pattern 1-0-1",
+          "Pattern 1-0-0"
+        ],
+        "durations": [],
+        "warnings": [
+          "dizzy",
+          "shaky"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Metformin 1000 mg": {
+            "slots": [
+              "morning",
+              "night"
+            ],
+            "as_needed": false
+          },
+          "Glimepiride 2 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P23",
+      "text": "Fluconazole 150 mg single dose. Seek help if hives or difficulty breathing.",
+      "gold": {
+        "medications": [
+          "Fluconazole 150 mg"
+        ],
+        "frequencies": [],
+        "durations": [],
+        "warnings": [
+          "hives",
+          "difficulty breathing"
+        ],
+        "has_prohibition": false,
+        "timetable": {}
+      }
+    },
+    {
+      "id": "P24",
+      "text": "Sertraline 50 mg OD in the morning. Do not drink alcohol. Contact your doctor if you have severe headache.",
+      "gold": {
+        "medications": [
+          "Sertraline 50 mg"
+        ],
+        "frequencies": [
+          "Once a day",
+          "Every morning"
+        ],
+        "durations": [],
+        "warnings": [
+          "severe headache"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Sertraline 50 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P25",
+      "text": "Vitamin D3 60000 IU once a week for 8 weeks with milk.",
+      "gold": {
+        "medications": [
+          "Vitamin D3 60000 IU"
+        ],
+        "frequencies": [
+          "Once a week"
+        ],
+        "durations": [
+          "8 weeks"
+        ],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {}
+      }
+    },
+    {
+      "id": "P26",
+      "text": "Cefixime 200 mg BD x 7 days. Paracetamol 500 mg TDS PRN for fever. Report persistent fever after 3 days.",
+      "gold": {
+        "medications": [
+          "Cefixime 200 mg",
+          "Paracetamol 500 mg"
+        ],
+        "frequencies": [
+          "Twice a day",
+          "3 times a day",
+          "As needed"
+        ],
+        "durations": [
+          "7 days"
+        ],
+        "warnings": [
+          "persistent fever"
+        ],
+        "has_prohibition": false,
+        "timetable": {
+          "Cefixime 200 mg": {
+            "slots": [
+              "morning",
+              "night"
+            ],
+            "as_needed": false
+          },
+          "Paracetamol 500 mg": {
+            "slots": [
+              "morning",
+              "afternoon",
+              "night"
+            ],
+            "as_needed": true
+          }
+        }
+      }
+    },
+    {
+      "id": "P27",
+      "text": "Lisinopril 10 mg QD. Do not use potassium supplements. Report swelling of lips or tongue at once.",
+      "gold": {
+        "medications": [
+          "Lisinopril 10 mg"
+        ],
+        "frequencies": [
+          "Once a day"
+        ],
+        "durations": [],
+        "warnings": [
+          "swelling of lips or tongue"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Lisinopril 10 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P28",
+      "text": "Gabapentin 300 mg at bedtime for 2 weeks. May cause dizziness. Do not drive.",
+      "gold": {
+        "medications": [
+          "Gabapentin 300 mg"
+        ],
+        "frequencies": [
+          "At bedtime"
+        ],
+        "durations": [
+          "2 weeks"
+        ],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {
+          "Gabapentin 300 mg": {
+            "slots": [
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P29",
+      "text": "Tab Levocetirizine 5 mg 0-0-1 x 7 days. Tab Paracetamol 500 mg 1-1-1 x 3 days after food.",
+      "gold": {
+        "medications": [
+          "Levocetirizine 5 mg",
+          "Paracetamol 500 mg"
+        ],
+        "frequencies": [
+          "Pattern 0-0-1",
+          "Pattern 1-1-1"
+        ],
+        "durations": [
+          "7 days",
+          "3 days"
+        ],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {
+          "Levocetirizine 5 mg": {
+            "slots": [
+              "night"
+            ],
+            "as_needed": false
+          },
+          "Paracetamol 500 mg": {
+            "slots": [
+              "morning",
+              "afternoon",
+              "night"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    },
+    {
+      "id": "P30",
+      "text": "Methotrexate 7.5 mg once a week on Sunday. Folic acid 5 mg once a day except Sunday. Never take methotrexate daily. Report mouth ulcers or yellowing of skin.",
+      "gold": {
+        "medications": [
+          "Methotrexate 7.5 mg",
+          "Folic acid 5 mg"
+        ],
+        "frequencies": [
+          "Once a week",
+          "Once a day"
+        ],
+        "durations": [],
+        "warnings": [
+          "mouth ulcers",
+          "yellowing of skin"
+        ],
+        "has_prohibition": true,
+        "timetable": {
+          "Folic acid 5 mg": {
+            "slots": [
+              "morning"
+            ],
+            "as_needed": false
+          }
+        }
+      }
+    }
+  ]
+}

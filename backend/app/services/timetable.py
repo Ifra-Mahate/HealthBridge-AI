@@ -25,7 +25,6 @@ FREQ_SLOTS = {
 HOURS_SLOTS = {24: ["morning"], 12: ["morning", "night"], 8: ["morning", "afternoon", "night"],
                6: ["morning", "afternoon", "evening", "night"]}
 
-AMOUNT_RE = re.compile(r"\b(\d+(?:\s*-\s*\d+)?)\s*(puff|tablet|tab|capsule|cap|drop|teaspoon|ml)s?\b", re.IGNORECASE)
 FOOD_RE = re.compile(
     r"(\d+\s*(?:minutes?|mins?|hours?)\s+(?:before|after)\s+\w+"
     r"|with\s+(?:food|meals?|milk|breakfast|dinner)(?:\s+and\s+(?:breakfast|lunch|dinner))?"
@@ -42,10 +41,13 @@ def _canonical(entry: str) -> str:
 
 
 def _slots_for(frequencies: List[str]):
-    """Returns (slots, as_needed) for a list of extractor frequency entries."""
+    """Returns (slots, as_needed, weekly) for a list of extractor frequency entries."""
     slots: List[str] = []
     as_needed = False
     labels = [_canonical(f) for f in frequencies]
+    weekly = "Once a week" in labels
+    if weekly:
+        return ["morning"], False, True
     # Specific times of day beat a bare count ("once a day" + "every morning" = morning)
     specific = [l for l in labels if l in ("Every morning", "Every night", "At bedtime", "Every morning and night")]
     for label in labels:
@@ -53,6 +55,12 @@ def _slots_for(frequencies: List[str]):
             as_needed = True
             continue
         if label == "Once a day" and specific:
+            continue
+        pattern = re.match(r"Pattern\s+([\d.\-]+)$", label)
+        if pattern:
+            parts = pattern.group(1).split("-")
+            names = ["morning", "afternoon", "night"] if len(parts) == 3 else SLOTS
+            slots += [n for n, p in zip(names, parts) if float(p) > 0]
             continue
         hours = re.match(r"Every\s+(\d+)(?:-\d+)?\s+hours", label)
         if hours:
@@ -62,15 +70,15 @@ def _slots_for(frequencies: List[str]):
             continue
         slots += FREQ_SLOTS.get(label, [])
     ordered = [s for s in SLOTS if s in slots]
-    return ordered, as_needed
+    return ordered, as_needed, False
 
 
 def _amount(text: str) -> Optional[str]:
-    m = AMOUNT_RE.search(text)
-    if not m:
+    found = ClinicalExtractor.per_dose_count(text)
+    if not found:
         return None
-    n = re.sub(r"\s+", "", m.group(1))
-    unit = {"tab": "tablet", "cap": "capsule"}.get(m.group(2).lower(), m.group(2).lower())
+    n, raw_unit = found
+    unit = {"tab": "tablet", "cap": "capsule"}.get(raw_unit, raw_unit)
     return f"{n} {unit}{'' if n == '1' or unit == 'ml' else 's'}"
 
 
@@ -80,6 +88,10 @@ def _food_note(text: str) -> Optional[str]:
         if NEGATED.search(clause):
             continue
         notes += [m.group(0) for m in FOOD_RE.finditer(clause)]
+        if re.search(r"\bAC\b", clause):
+            notes.append("before meals (AC)")
+        if re.search(r"\bPC\b", clause):
+            notes.append("after meals (PC)")
     notes = [n for n in notes if not any(n != o and n.lower() in o.lower() for o in notes)]
     return ", ".join(dict.fromkeys(notes)) or None
 
@@ -95,12 +107,12 @@ def _days(durations: List[str]) -> Optional[int]:
 def build_timetable(raw_text: str, extracted: ExtractedEntities) -> List[TimetableEntry]:
     medicines = extracted.medications
     if not medicines:
-        slots, as_needed = _slots_for(extracted.frequencies)
+        slots, as_needed, weekly = _slots_for(extracted.frequencies)
         if not slots and not as_needed:
             return []
         name = extracted.dosages[0] if extracted.dosages else "Your medicine"
         return [TimetableEntry(
-            medicine=name, amount=_amount(raw_text), slots=slots, as_needed=as_needed,
+            medicine=name, amount=_amount(raw_text), slots=slots, as_needed=as_needed, weekly=weekly,
             food_note=_food_note(raw_text), duration_days=_days(extracted.durations),
         )]
 
@@ -110,10 +122,10 @@ def build_timetable(raw_text: str, extracted: ExtractedEntities) -> List[Timetab
     for k, (pos, med) in enumerate(found):
         end = found[k + 1][0] if k + 1 < len(found) else len(raw_text)
         segment = raw_text[pos:end]
-        slots, as_needed = _slots_for(ClinicalExtractor.extract_frequencies(segment))
+        slots, as_needed, weekly = _slots_for(ClinicalExtractor.extract_frequencies(segment))
         durations = ClinicalExtractor.extract_durations(segment) or (extracted.durations if len(found) == 1 else [])
         entries.append(TimetableEntry(
-            medicine=med, amount=_amount(segment), slots=slots, as_needed=as_needed,
+            medicine=med, amount=_amount(segment), slots=slots, as_needed=as_needed, weekly=weekly,
             food_note=_food_note(segment), duration_days=_days(durations),
         ))
     return entries

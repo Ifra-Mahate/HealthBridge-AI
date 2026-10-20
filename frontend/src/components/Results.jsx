@@ -4,6 +4,7 @@ import AudioPlayer from './AudioPlayer';
 import StructuredCards from './StructuredCards';
 import Checklist from './Checklist';
 import Timetable from './Timetable';
+import Glossary from './Glossary';
 import VerificationCard from './VerificationCard';
 
 const HEADINGS = {
@@ -85,6 +86,8 @@ export default function Results({ result, originalText, onStartOver, onToast }) 
       <StructuredCards cards={result.structured_cards} language={lang} />
 
       <Timetable entries={result.timetable} language={lang} onToast={onToast} />
+
+      <Glossary terms={result.glossary} language={lang} />
 
       {result.structured_cards?.patient_summary?.length > 0 && (
         <Checklist items={result.structured_cards.patient_summary} language={lang} />

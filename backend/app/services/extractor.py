@@ -24,12 +24,16 @@ COMBINED_UNITS = "|".join(UNIT_PATTERNS)
 
 # Common clinical frequency terms & Latin abbreviations
 FREQUENCY_PATTERNS = [
-    (r"\b(once|1\s*time)\s+(a|per)\s+day\b|\b(once\s+daily)\b|\bqd\b|\bq\.d\.\b", "Once a day (QD)"),
-    (r"\b(twice|2\s*times)\s+(a|per)\s+day\b|\b(twice\s+daily)\b|\bbid\b|\bb\.i\.d\.\b", "Twice a day (BID)"),
-    (r"\b(three|3)\s*times\s+(a|per)\s+day\b|\b(thrice|three\s+times)\s+daily\b|\btid\b|\bt\.i\.d\.\b", "3 times a day (TID)"),
-    (r"\b(four|4)\s*times\s+(a|per)\s+day\b|\bfour\s+times\s+daily\b|\bqid\b|\bq\.i\.d\.\b", "4 times a day (QID)"),
+    # Indian dose-pattern notation: 1-0-1 = morning-afternoon-night, 1-1-1-1 = four times a day
+    (r"(?<![\d.\-/])([0-2](?:\.5)?)\s*-\s*([0-2](?:\.5)?)\s*-\s*([0-2](?:\.5)?)\s*-\s*([0-2](?:\.5)?)(?![\d\-/])", "Pattern {p}"),
+    (r"(?<![\d.\-/])([0-2](?:\.5)?)\s*-\s*([0-2](?:\.5)?)\s*-\s*([0-2](?:\.5)?)(?![\d\-/]|\.\d)", "Pattern {p}"),
+    (r"\b(once|1\s*time)\s+(a|per)\s+day\b|\b(once\s+daily)\b|\bqd\b|\bq\.d\.\b|\bod\b", "Once a day (QD)"),
+    (r"\b(twice|2\s*times)\s+(a|per)\s+day\b|\b(twice\s+daily)\b|\bbid\b|\bb\.i\.d\.\b|\bbd\b", "Twice a day (BID)"),
+    (r"\b(three|3)\s*times\s+(a|per)\s+day\b|\b(thrice|three\s+times)\s+daily\b|\btid\b|\bt\.i\.d\.\b|\btds\b", "3 times a day (TID)"),
+    (r"\b(four|4)\s*times\s+(a|per)\s+day\b|\bfour\s+times\s+daily\b|\bqid\b|\bq\.i\.d\.\b|\bqds\b", "4 times a day (QID)"),
     (r"\bevery\s+(\d+(?:\s*-\s*\d+)?)\s+hours?\b|\bq(\d+)h\b", "Every {n} hours"),
-    (r"\bas\s+needed\b|\bprn\b|\bp\.r\.n\.\b", "As needed (PRN)"),
+    (r"\bas\s+needed\b|\bprn\b|\bp\.r\.n\.\b|\bsos\b|\bwhen\s+required\b", "As needed (PRN)"),
+    (r"\bonce\s+(a|per|every)\s+week\b|\bonce\s+weekly\b|\bweekly\b", "Once a week"),
     (r"\bat\s+bedtime\b|\bbedtime\b|\bhs\b|\bh\.s\.\b", "At bedtime (HS)"),
     (r"\b(every|each)\s+morning\s+and\s+(night|evening)\b", "Every morning and night"),
     (r"\bevery\s+morning\b(?!\s+and\s+(night|evening))|\bin\s+the\s+morning\b", "Every morning"),
@@ -42,6 +46,12 @@ DURATION_PATTERNS = [
     r"\bx\s*(\d+)\s*(days?|weeks?|months?)\b",
     r"\b(\d+)\s*-\s*(day|week|month)\s+course\b",
 ]
+
+# Per-dose counts and the words that turn a count into a limit instead of a dose
+COUNT_RE = re.compile(r"\b(\d+(?:\s*-\s*\d+)?)\s*(puff|tablet|tab|capsule|cap|drop|teaspoon|ml)s?\b", re.IGNORECASE)
+LIMIT_WORDS = re.compile(r"(not\s+more\s+than|no\s+more\s+than|more\s+than|maximum(\s+of)?|max\.?|exceed|up\s+to|upto|at\s+most)\s*$")
+
+DOSAGE_FORMS = {"tab", "tabs", "cap", "caps", "syp", "inj", "susp", "oint", "gel", "cream", "drops", "eye", "ear"}
 
 # Capitalised words that appear before a strength but are not medicine names
 NON_MEDICINE_WORDS = {
@@ -61,6 +71,8 @@ TIMING_PATTERNS = [
     r"in\s+the\s+morning",
     r"at\s+bedtime",
     r"with\s+a\s+full\s+glass\s+of\s+water",
+    r"\bAC\b",   # ante cibum: before meals
+    r"\bPC\b",   # post cibum: after meals
 ]
 
 # Clinical warnings / red-flags
@@ -141,7 +153,8 @@ class ClinicalExtractor:
         """Finds all occurrences of numbers associated with medical units or standalone count numbers."""
         results: List[ExtractedNumberUnit] = []
         pattern = re.compile(
-            rf"(?P<val>\d+(?:\.\d+)?|\d+/\d+)\s*(?P<unit>{COMBINED_UNITS})?",
+            # (?<![A-Za-z]) skips digits that belong to a name, such as Vitamin D3 or B12
+            rf"(?<![A-Za-z\d.])(?P<val>\d+(?:\.\d+)?|\d+/\d+)\s*(?P<unit>{COMBINED_UNITS})?",
             re.IGNORECASE
         )
         for match in pattern.finditer(text):
@@ -188,7 +201,9 @@ class ClinicalExtractor:
             matches = re.finditer(pat, text, re.IGNORECASE)
             for m in matches:
                 label = canonical
-                if "{n}" in canonical:
+                if "{p}" in canonical:
+                    label = canonical.replace("{p}", "-".join(g for g in m.groups() if g is not None))
+                elif "{n}" in canonical:
                     n = next((g for g in m.groups() if g), "")
                     label = canonical.replace("{n}", re.sub(r"\s+", "", n))
                 found.append(f"{m.group(0).strip()} [{label}]")
@@ -207,16 +222,38 @@ class ClinicalExtractor:
         return list(dict.fromkeys(found))
 
     @classmethod
+    def per_dose_count(cls, text: str):
+        """
+        First per-dose count such as '2 puffs' or '1-2 tablets', as (number, unit).
+        Counts that state a limit ('not more than 3 tablets in 24 hours') are skipped,
+        because reading a daily maximum as a single dose would be dangerous.
+        """
+        for m in COUNT_RE.finditer(text):
+            before = text[max(0, m.start() - 25):m.start()].lower()
+            if LIMIT_WORDS.search(before):
+                continue
+            return re.sub(r"\s+", "", m.group(1)), m.group(2).lower()
+        return None
+
+    @classmethod
     def extract_medications(cls, text: str) -> List[str]:
-        """Finds 'Name strength' pairs such as 'Metformin 500 mg'."""
+        """
+        Finds 'Name strength' pairs such as 'Metformin 500 mg', including two-word names
+        ('Insulin Glargine 10 units', 'Vitamin D3 60000 IU', 'Folic acid 5 mg').
+        """
         pattern = re.compile(
-            r"\b([A-Z][a-zA-Z]{3,})\s+(\d+(?:\.\d+)?\s*(?:mg|mcg|g|ml|iu|units?))\b"
+            r"\b([A-Z][a-zA-Z]{2,}(?:\s+(?:[A-Z][a-zA-Z]*\d*|acid))?)\s+"
+            r"(\d+(?:\.\d+)?\s*(?i:mg|mcg|g|ml|iu|units?))\b"
         )
         found: List[str] = []
         for m in pattern.finditer(text):
-            if m.group(1).lower() in NON_MEDICINE_WORDS:
+            words = m.group(1).split()
+            # Drop leading form or verb words: "Tab Pantoprazole", "Take Atorvastatin"
+            while words and (words[0].lower() in NON_MEDICINE_WORDS or words[0].lower() in DOSAGE_FORMS):
+                words = words[1:]
+            if not words or len(words[0]) < 4 and not re.search(r"\d", " ".join(words)):
                 continue
-            found.append(f"{m.group(1)} {m.group(2)}")
+            found.append(f"{' '.join(words)} {m.group(2)}")
         return list(dict.fromkeys(found))
 
     @classmethod

@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     )
     STRICT_NUMERIC_VERIFICATION: bool = Field(default=True)
     MINIMUM_VERIFICATION_THRESHOLD: int = Field(default=70)
+    AI_TIMEOUT_SECONDS: int = Field(default=90)
 
 
 settings = Settings()

@@ -644,3 +644,11 @@ kbd { padding: .05rem .35rem; border-radius: 5px; border: 1px solid var(--border
   .slot-name { flex-direction: column; gap: .1rem; font-size: .75rem; }
   .slot-head input[type="time"] { font-size: .75rem; padding: .25rem .1rem; }
 }
+
+/* Glossary */
+.glossary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; margin: 0; }
+.glossary-item { display: flex; gap: .85rem; align-items: baseline; padding: .7rem .9rem; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); }
+.glossary-item dt { flex: 0 0 auto; }
+.glossary-item code { display: inline-block; min-width: 3.25rem; padding: .15rem .5rem; border-radius: 8px; background: var(--brand-soft); color: var(--brand-ink); font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: .8125rem; font-weight: 700; text-align: center; }
+.glossary-item dd { margin: 0; font-size: .9375rem; color: var(--text-2); line-height: 1.5; }
+@media (max-width: 720px) { .glossary { grid-template-columns: 1fr; } }

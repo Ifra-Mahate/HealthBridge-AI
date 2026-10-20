@@ -70,8 +70,15 @@ class TimetableEntry(BaseModel):
     amount: Optional[str] = None
     slots: List[str] = Field(default_factory=list, description="Any of: morning, afternoon, evening, night")
     as_needed: bool = False
+    weekly: bool = False
     food_note: Optional[str] = None
     duration_days: Optional[int] = None
+
+
+class GlossaryTerm(BaseModel):
+    term: str
+    found_as: str
+    meaning: str
 
 
 class SimplificationResponse(BaseModel):
@@ -83,6 +90,7 @@ class SimplificationResponse(BaseModel):
     extracted_from_original: ExtractedEntities
     verification: VerificationReport
     timetable: List[TimetableEntry] = Field(default_factory=list)
+    glossary: List[GlossaryTerm] = Field(default_factory=list)
     ai_provider: str
     ai_model: str
     ai_configured: bool

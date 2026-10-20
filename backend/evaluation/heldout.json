@@ -1,0 +1,188 @@
+{
+  "description": "Held-out test set: 15 fictional prescriptions written after development was frozen. The code was not modified after these results were first computed. Same annotation conventions as dataset.json.",
+  "items": [
+    {
+      "id": "H01",
+      "text": "Take 2 tablets of Paracetamol 500 mg every 6 hours as needed for pain. Do not take more than 8 tablets in 24 hours.",
+      "gold": {
+        "medications": ["Paracetamol 500 mg"],
+        "frequencies": ["Every 6 hours", "As needed"],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {"Paracetamol 500 mg": {"slots": [], "as_needed": true}}
+      }
+    },
+    {
+      "id": "H02",
+      "text": "Cap. Amoxycillin 500mg t.d.s. for five days.",
+      "gold": {
+        "medications": ["Amoxycillin 500 mg"],
+        "frequencies": ["3 times a day"],
+        "durations": ["5 days"],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {"Amoxycillin 500 mg": {"slots": ["morning", "afternoon", "night"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H03",
+      "text": "Inj. Insulin Regular 8 units SC 15 minutes before breakfast and dinner.",
+      "gold": {
+        "medications": ["Insulin Regular 8 units"],
+        "frequencies": ["Twice a day"],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {"Insulin Regular 8 units": {"slots": ["morning", "night"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H04",
+      "text": "Tab. Telmisartan 40mg OD in the morning. Check BP daily. Report dizziness or fainting.",
+      "gold": {
+        "medications": ["Telmisartan 40 mg"],
+        "frequencies": ["Once a day", "Every morning"],
+        "durations": [],
+        "warnings": ["dizziness", "fainting"],
+        "has_prohibition": false,
+        "timetable": {"Telmisartan 40 mg": {"slots": ["morning"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H05",
+      "text": "Mupirocin 2% ointment, apply on the wound BD for 7 days. Do not apply in the eyes.",
+      "gold": {
+        "medications": ["Mupirocin 2%"],
+        "frequencies": ["Twice a day"],
+        "durations": ["7 days"],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {"Mupirocin 2%": {"slots": ["morning", "night"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H06",
+      "text": "Syrup Ambroxol 5 ml thrice daily for 5 days.",
+      "gold": {
+        "medications": ["Ambroxol 5 ml"],
+        "frequencies": ["3 times a day"],
+        "durations": ["5 days"],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {"Ambroxol 5 ml": {"slots": ["morning", "afternoon", "night"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H07",
+      "text": "Tab Dolo 650 1-1-1 after food x 3 days.",
+      "gold": {
+        "medications": ["Dolo 650"],
+        "frequencies": ["Pattern 1-1-1"],
+        "durations": ["3 days"],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {"Dolo 650": {"slots": ["morning", "afternoon", "night"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H08",
+      "text": "Tab Ecosprin 75 mg once daily after lunch. Avoid painkillers like ibuprofen. Report blood in stool.",
+      "gold": {
+        "medications": ["Ecosprin 75 mg"],
+        "frequencies": ["Once a day"],
+        "durations": [],
+        "warnings": ["blood in stool"],
+        "has_prohibition": true,
+        "timetable": {"Ecosprin 75 mg": {"slots": ["afternoon"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H09",
+      "text": "Tab Ranitidine 150 mg b.d. before meals.",
+      "gold": {
+        "medications": ["Ranitidine 150 mg"],
+        "frequencies": ["Twice a day"],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {"Ranitidine 150 mg": {"slots": ["morning", "night"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H10",
+      "text": "Tab Cetirizine 10 mg at night for 5 days. May cause sleepiness; do not drive.",
+      "gold": {
+        "medications": ["Cetirizine 10 mg"],
+        "frequencies": ["Every night"],
+        "durations": ["5 days"],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {"Cetirizine 10 mg": {"slots": ["night"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H11",
+      "text": "Tab Metoprolol 25 mg BD. Do not stop suddenly. Seek help if chest pain or shortness of breath.",
+      "gold": {
+        "medications": ["Metoprolol 25 mg"],
+        "frequencies": ["Twice a day"],
+        "durations": [],
+        "warnings": ["chest pain", "shortness of breath"],
+        "has_prohibition": true,
+        "timetable": {"Metoprolol 25 mg": {"slots": ["morning", "night"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H12",
+      "text": "Tab Alendronate 70 mg once weekly on an empty stomach with a full glass of water. Stay upright for 30 minutes.",
+      "gold": {
+        "medications": ["Alendronate 70 mg"],
+        "frequencies": ["Once a week"],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {}
+      }
+    },
+    {
+      "id": "H13",
+      "text": "Tab Ondansetron 4 mg q8h PRN for nausea, maximum 3 doses a day.",
+      "gold": {
+        "medications": ["Ondansetron 4 mg"],
+        "frequencies": ["Every 8 hours", "As needed"],
+        "durations": [],
+        "warnings": [],
+        "has_prohibition": true,
+        "timetable": {"Ondansetron 4 mg": {"slots": [], "as_needed": true}}
+      }
+    },
+    {
+      "id": "H14",
+      "text": "Tab Azithromycin 500 mg once a day for 3 days, 1 hour before food. Complete the course.",
+      "gold": {
+        "medications": ["Azithromycin 500 mg"],
+        "frequencies": ["Once a day"],
+        "durations": ["3 days"],
+        "warnings": [],
+        "has_prohibition": false,
+        "timetable": {"Azithromycin 500 mg": {"slots": ["morning"], "as_needed": false}}
+      }
+    },
+    {
+      "id": "H15",
+      "text": "Tab Glimepiride 1 mg OD before breakfast and Tab Metformin 500 mg 1-0-1 after food. If you feel shaky or sweaty, take sugar. Avoid alcohol.",
+      "gold": {
+        "medications": ["Glimepiride 1 mg", "Metformin 500 mg"],
+        "frequencies": ["Once a day", "Pattern 1-0-1"],
+        "durations": [],
+        "warnings": ["shaky", "sweaty"],
+        "has_prohibition": true,
+        "timetable": {
+          "Glimepiride 1 mg": {"slots": ["morning"], "as_needed": false},
+          "Metformin 500 mg": {"slots": ["morning", "night"], "as_needed": false}
+        }
+      }
+    }
+  ]
+}

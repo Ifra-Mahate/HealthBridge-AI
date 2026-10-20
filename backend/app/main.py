@@ -18,6 +18,7 @@ from .services.extractor import ClinicalExtractor
 from .services.verifier import InformationVerifier
 from .services.ai_service import AISimplificationService
 from .services.timetable import build_timetable
+from .services.glossary import build_glossary
 from .data.sample_data import SAMPLE_PRESETS
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -25,7 +26,7 @@ logger = logging.getLogger("healthbridge.main")
 
 app = FastAPI(
     title="HealthBridge AI - Clinical Simplification & Verification API",
-    description="Backend API for converting complex medical instructions into accessible English, Hindi, and Marathi for low-literacy patients with automated safety & verification checks.",
+    description="Backend API for converting complex medical instructions into accessible English, Hindi, and Marathi for patients and caregivers, with automated safety and verification checks.",
     version="1.0.0"
 )
 
@@ -176,6 +177,7 @@ async def simplify_instructions(payload: SimplificationRequest):
             extracted_from_original=extracted,
             verification=verification,
             timetable=build_timetable(payload.raw_text, extracted),
+            glossary=build_glossary(payload.raw_text, target_lang),
             ai_provider=ai_result.get("ai_provider", "HealthBridge Engine"),
             ai_model=ai_result.get("ai_model", "Default"),
             ai_configured=ai_result.get("ai_configured", False),

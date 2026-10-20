@@ -17,7 +17,7 @@ const TEXT = {
     title: 'Your daily medicine timetable',
     sub: 'When to take each medicine. Change the times to fit your day, then add reminders to your phone.',
     slots: { morning: 'Morning', afternoon: 'Afternoon', evening: 'Evening', night: 'Night' },
-    medicine: 'Medicine', asNeeded: 'Only when needed', alsoAsNeeded: 'only if needed',
+    medicine: 'Medicine', asNeeded: 'Only when needed', alsoAsNeeded: 'only if needed', weekly: 'once a week only',
     days: (n) => `for ${n} days`, ongoing: 'until your doctor says to stop',
     add: 'Add reminders to calendar', note: 'Works with Google Calendar, Apple Calendar and Outlook. Open the downloaded file to import it.',
     take: 'Take', food: 'How', noDuration: 'Repeats for 30 days. Ask your doctor how long to continue.',
@@ -28,7 +28,7 @@ const TEXT = {
     title: 'आपकी रोज़ की दवा की समय-सारणी',
     sub: 'कौन-सी दवा कब लेनी है। समय अपने दिन के हिसाब से बदलें, फिर फ़ोन में रिमाइंडर जोड़ें।',
     slots: { morning: 'सुबह', afternoon: 'दोपहर', evening: 'शाम', night: 'रात' },
-    medicine: 'दवा', asNeeded: 'सिर्फ़ ज़रूरत पड़ने पर', alsoAsNeeded: 'ज़रूरत हो तभी',
+    medicine: 'दवा', asNeeded: 'सिर्फ़ ज़रूरत पड़ने पर', alsoAsNeeded: 'ज़रूरत हो तभी', weekly: 'सिर्फ़ हफ़्ते में एक बार',
     days: (n) => `${n} दिन तक`, ongoing: 'जब तक डॉक्टर बंद करने को न कहें',
     add: 'कैलेंडर में रिमाइंडर जोड़ें', note: 'Google Calendar, Apple Calendar और Outlook में काम करता है। डाउनलोड की गई फ़ाइल खोलें।',
     take: 'दवा लें', food: 'कैसे', noDuration: '30 दिन तक दोहराया जाएगा। डॉक्टर से पूछें कि कब तक लेनी है।',
@@ -39,7 +39,7 @@ const TEXT = {
     title: 'तुमचे रोजचे औषध वेळापत्रक',
     sub: 'कोणते औषध कधी घ्यायचे. वेळा तुमच्या दिनक्रमानुसार बदला आणि फोनमध्ये रिमाइंडर जोडा.',
     slots: { morning: 'सकाळ', afternoon: 'दुपार', evening: 'संध्याकाळ', night: 'रात्र' },
-    medicine: 'औषध', asNeeded: 'फक्त गरज असेल तेव्हा', alsoAsNeeded: 'गरज असेल तरच',
+    medicine: 'औषध', asNeeded: 'फक्त गरज असेल तेव्हा', alsoAsNeeded: 'गरज असेल तरच', weekly: 'फक्त आठवड्यातून एकदा',
     days: (n) => `${n} दिवस`, ongoing: 'डॉक्टर थांबवायला सांगेपर्यंत',
     add: 'कॅलेंडरमध्ये रिमाइंडर जोडा', note: 'Google Calendar, Apple Calendar आणि Outlook मध्ये चालते. डाउनलोड केलेली फाइल उघडा.',
     take: 'औषध घ्या', food: 'कसे', noDuration: '30 दिवस पुनरावृत्ती होईल. किती दिवस घ्यायचे ते डॉक्टरांना विचारा.',
@@ -108,7 +108,7 @@ export default function Timetable({ entries, language, onToast }) {
                   <th scope="row">
                     <strong>{entry.medicine}</strong>
                     <span className="tt-meta">
-                      {[entry.amount, entry.duration_days ? t.days(entry.duration_days) : t.ongoing, entry.as_needed && t.alsoAsNeeded]
+                      {[entry.weekly && t.weekly, entry.amount, entry.duration_days ? t.days(entry.duration_days) : t.ongoing, entry.as_needed && t.alsoAsNeeded]
                         .filter(Boolean).join(' · ')}
                     </span>
                     {entry.food_note && <span className="tt-food"><Utensils /> {entry.food_note}</span>}

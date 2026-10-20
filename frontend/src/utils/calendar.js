@@ -33,6 +33,7 @@ export function buildCalendar(entries, times, labels) {
       // If today's time has already passed, begin tomorrow
       if (first < now) first.setDate(first.getDate() + 1);
       const days = entry.duration_days || DEFAULT_DAYS;
+      const occurrences = entry.weekly ? Math.max(1, Math.ceil(days / 7)) : days;
       const local = `${first.getFullYear()}${pad(first.getMonth() + 1)}${pad(first.getDate())}T${pad(h)}${pad(m)}00`;
       const title = `${labels.take}: ${entry.medicine}${entry.amount ? ` (${entry.amount})` : ''}`;
       const notes = [
@@ -47,7 +48,7 @@ export function buildCalendar(entries, times, labels) {
         `DTSTAMP:${stamp(now)}`,
         `DTSTART:${local}`,
         'DURATION:PT10M',
-        `RRULE:FREQ=DAILY;COUNT=${days}`,
+        `RRULE:FREQ=${entry.weekly ? 'WEEKLY' : 'DAILY'};COUNT=${occurrences}`,
         `SUMMARY:${escape(title)}`,
         `DESCRIPTION:${escape(notes)}`,
         'BEGIN:VALARM',

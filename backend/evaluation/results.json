@@ -1,0 +1,214 @@
+{
+  "development": {
+    "extraction": {
+      "medications": {
+        "precision": 1.0,
+        "recall": 0.975609756097561,
+        "f1": 0.9876543209876543,
+        "gold": 41
+      },
+      "frequencies": {
+        "precision": 1.0,
+        "recall": 0.9772727272727273,
+        "f1": 0.9885057471264368,
+        "gold": 44
+      },
+      "durations": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "gold": 17
+      },
+      "warnings": {
+        "precision": 0.9523809523809523,
+        "recall": 0.9090909090909091,
+        "f1": 0.9302325581395349,
+        "gold": 22
+      },
+      "prohibitions": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "gold": 20
+      }
+    },
+    "timetable": {
+      "entries": 38,
+      "accuracy": 0.8947368421052632,
+      "recognised": 0.9736842105263158,
+      "accuracy_when_recognised": 0.918918918918919
+    }
+  },
+  "heldout": {
+    "extraction": {
+      "medications": {
+        "precision": 0.9285714285714286,
+        "recall": 0.8125,
+        "f1": 0.8666666666666666,
+        "gold": 16
+      },
+      "frequencies": {
+        "precision": 1.0,
+        "recall": 0.7894736842105263,
+        "f1": 0.8823529411764706,
+        "gold": 19
+      },
+      "durations": {
+        "precision": 1.0,
+        "recall": 0.8333333333333334,
+        "f1": 0.9090909090909091,
+        "gold": 6
+      },
+      "warnings": {
+        "precision": 1.0,
+        "recall": 0.5714285714285714,
+        "f1": 0.7272727272727273,
+        "gold": 7
+      },
+      "prohibitions": {
+        "precision": 1.0,
+        "recall": 0.8571428571428571,
+        "f1": 0.923076923076923,
+        "gold": 7
+      }
+    },
+    "timetable": {
+      "entries": 15,
+      "accuracy": 0.4666666666666667,
+      "recognised": 0.8,
+      "accuracy_when_recognised": 0.5833333333333334
+    }
+  },
+  "preservation": {
+    "en": {
+      "mean_score": 98.66666666666667,
+      "verified_rate": 0.9555555555555556,
+      "all_numbers_kept_rate": 0.9555555555555556,
+      "number_preservation": 0.9848484848484849
+    },
+    "hi": {
+      "mean_score": 98.66666666666667,
+      "verified_rate": 0.9555555555555556,
+      "all_numbers_kept_rate": 0.9555555555555556,
+      "number_preservation": 0.9848484848484849
+    },
+    "mr": {
+      "mean_score": 98.66666666666667,
+      "verified_rate": 0.9555555555555556,
+      "all_numbers_kept_rate": 0.9555555555555556,
+      "number_preservation": 0.9848484848484849
+    }
+  },
+  "fault_injection": {
+    "Dose number altered": {
+      "hard": false,
+      "n": 45,
+      "v1": 45,
+      "v2": 45
+    },
+    "Dose number deleted": {
+      "hard": false,
+      "n": 45,
+      "v1": 45,
+      "v2": 45
+    },
+    "All prohibitions removed": {
+      "hard": false,
+      "n": 26,
+      "v1": 26,
+      "v2": 26
+    },
+    "Warning signs removed": {
+      "hard": false,
+      "n": 18,
+      "v1": 18,
+      "v2": 18
+    },
+    "Schedule removed": {
+      "hard": false,
+      "n": 40,
+      "v1": 40,
+      "v2": 40
+    },
+    "Two dose numbers swapped": {
+      "hard": true,
+      "n": 31,
+      "v1": 0,
+      "v2": 29
+    },
+    "One of several prohibitions removed": {
+      "hard": true,
+      "n": 3,
+      "v1": 0,
+      "v2": 3
+    },
+    "Prohibition inverted (\"Do not X\" -> \"X\")": {
+      "hard": true,
+      "n": 23,
+      "v1": 0,
+      "v2": 20
+    }
+  },
+  "clean_false_alarm_rate": {
+    "v1": 0.044444444444444446,
+    "v2": 0.044444444444444446
+  },
+  "readability": {
+    "fk_before": 5.506897487550548,
+    "fk_after": 4.6515556343105535,
+    "abbr_before": 70,
+    "abbr_after": 0
+  },
+  "llm": [
+    {
+      "id": "P01",
+      "live": true,
+      "provider": "Google Gemini",
+      "score": 100,
+      "status": "VERIFIED",
+      "numbers_ok": true,
+      "missing": [],
+      "latency": 83.68922543525696
+    },
+    {
+      "id": "P02",
+      "live": true,
+      "provider": "Google Gemini (REST API)",
+      "score": 100,
+      "status": "VERIFIED",
+      "numbers_ok": true,
+      "missing": [],
+      "latency": 211.9632227420807
+    },
+    {
+      "id": "P03",
+      "live": false,
+      "provider": "Built-in rule-based engine",
+      "score": 100,
+      "status": "VERIFIED",
+      "numbers_ok": true,
+      "missing": [],
+      "latency": 276.66159868240356
+    },
+    {
+      "id": "P04",
+      "live": true,
+      "provider": "Google Gemini",
+      "score": 100,
+      "status": "VERIFIED",
+      "numbers_ok": true,
+      "missing": [],
+      "latency": 121.50904703140259
+    },
+    {
+      "id": "P05",
+      "live": true,
+      "provider": "Google Gemini",
+      "score": 100,
+      "status": "VERIFIED",
+      "numbers_ok": true,
+      "missing": [],
+      "latency": 117.41138505935669
+    }
+  ]
+}

@@ -65,5 +65,16 @@ SAMPLE_PRESETS: List[SamplePreset] = [
             "Do not exceed 1200 mg in 24 hours. Avoid taking with other aspirin or NSAIDs. "
             "Stop medication immediately and consult doctor if black tarry stools or persistent stomach burning occurs."
         )
+    ),
+    SamplePreset(
+        id="sample_indian_notation",
+        title="Pantoprazole & Paracetamol (Indian notation)",
+        category="Gastritis / Fever",
+        description="Typical Indian prescription shorthand: 1-0-1 dose patterns with AC, BD and SOS.",
+        raw_text=(
+            "Rx: Tab Pantoprazole 40 mg 1-0-0 AC x 14 days. Tab Domperidone 10 mg 1-0-1 AC x 5 days. "
+            "Tab Paracetamol 650 mg SOS for fever, not more than 3 tablets in 24 hours. "
+            "Avoid spicy and oily food. Consult doctor immediately if vomiting blood or black tarry stools."
+        )
     )
 ]
